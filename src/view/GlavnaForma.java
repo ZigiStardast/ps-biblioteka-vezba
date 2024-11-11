@@ -23,7 +23,8 @@ public class GlavnaForma extends javax.swing.JFrame {
     public GlavnaForma() {
         initComponents();
         controller = Controller.getInstance();
-        TableModel tm = new ModelTabeleKnjige(controller.getListaKnjiga());
+        //TableModel tm = new ModelTabeleKnjige(controller.getListaKnjiga());
+        TableModel tm = new ModelTabeleKnjige(controller.ucitajListuKnjigaIzBaze());
         tblKnjige.setModel(tm);
     }
 
@@ -186,8 +187,11 @@ public class GlavnaForma extends javax.swing.JFrame {
         if (selektovanRed == -1) {
             JOptionPane.showMessageDialog(this, "Morate selektovati knjigu koju zelite obrisati", "Upozorenje", JOptionPane.WARNING_MESSAGE);
         } else { 
-            Controller controller = Controller.getInstance();
-            controller.obrisiKnjigu(selektovanRed);
+            ModelTabeleKnjige mtk = (ModelTabeleKnjige) tblKnjige.getModel();
+            //int id = mtk.getListaKnjiga().get(selektovanRed).getId();
+            Integer id_klasa = (Integer)mtk.getValueAt(selektovanRed, 0);
+            int id = id_klasa.intValue();
+            controller.obrisiKnjigu(id);
             
             osveziTabelu();
         }
@@ -201,11 +205,11 @@ public class GlavnaForma extends javax.swing.JFrame {
     private void btnIzmeniActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIzmeniActionPerformed
         // TODO add your handling code here:
         int selektovaniRed = tblKnjige.getSelectedRow();
-        if ( selektovaniRed== -1) {
+        if (selektovaniRed== -1) {
             JOptionPane.showMessageDialog(this, "Molimo selektujte knjigu za izmenu.", "Greska", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        Knjiga k = controller.getListaKnjiga().get(selektovaniRed);
+        Knjiga k = controller.ucitajListuKnjigaIzBaze().get(selektovaniRed);
         new FormaKnjiga(this, false, k).setVisible(true);
     }//GEN-LAST:event_btnIzmeniActionPerformed
 
@@ -262,7 +266,7 @@ public class GlavnaForma extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
 
     void osveziTabelu() {
-        ModelTabeleKnjige tm = (ModelTabeleKnjige) tblKnjige.getModel();
-        tm.refreshTable();
+        TableModel tm = new ModelTabeleKnjige(controller.ucitajListuKnjigaIzBaze());
+        tblKnjige.setModel(tm);
     }
 }
